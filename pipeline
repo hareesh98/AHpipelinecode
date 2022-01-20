@@ -7,8 +7,15 @@ pipeline {
         stage('Hello') {
             steps {
                 echo 'Hello World'
+            }}
+        
+	 stages {
+        stage('AWS WITH DEVOPS') {
+            steps {
+                echo 'EXCELLENT and SIMPLY SUPER'
             }
         }
+		
 		stage('checkout')
 		{
 		steps{

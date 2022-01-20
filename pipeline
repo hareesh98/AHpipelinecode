@@ -1,9 +1,8 @@
 pipeline {
     agent any
 	environment {
-				PATH = "/opt/maven/bin:$PATH"
-				}
-
+  PATH = "/opt/maven/bin:$PATH"
+}
     stages {
         stage('Hello') {
             steps {
@@ -14,29 +13,37 @@ pipeline {
 		{
 		steps{
 		
-		{
-		checkout([$class: 'GitSCM', 
-		branches: [[name: '*/master']], 
-		extensions: [], 
-		userRemoteConfigs: [[credentialsId: 'AH-git-cred',
-		url: 'https://github.com/hareesh98/project.git']]])
-			}
+		
+checkout([$class: 'GitSCM',
+ branches: [[name: '*/master']], 
+ extensions: [],
+ userRemoteConfigs: [[credentialsId: 'mygithubcred', 
+url: 'https://github.com/hareesh98/project.git']]])
+							}
+								}
+				stage('build')
+				{ steps {
+				sh'mvn package'
 				}
-					}
-					stage('build')
-					{
-					steps{
-					sh'mvn package'
-					}
+				}
+				stage('deploy') {
+				steps
+				{deploy adapters: [tomcat9(credentialsId: 'tomcat-cred', 
+				path: '',
+				url: 'http://65.0.45.248:8080')],
+				contextPath: 'over-pipe', 
+				war: '**/*.war'}}
+				stage('artifact uploading')	{
+				steps{nexusArtifactUploader artifacts: [[artifactId: 'hello-world-war',
+				classifier: '', 
+				file: '/var/lib/jenkins/workspace/project1/target/hello-world-war-2.1.war',
+				type: 'war']],
+				credentialsId: 'nexus-credentials', 
+				groupId: 'com.efsavage',
+				nexusUrl: '15.207.89.15:8081', 
+				nexusVersion: 'nexus3', 
+				protocol: 'http', 
+				repository: 'A1pipe', 
+				version: '2.1'		}	}
 							}
-							stage('deploy')
-							{
-							steps{	deploy adapters: [tomcat9(credentialsId: 'tomcat-cred-repo1',
-							path: '',
-							url: 'http://65.0.45.248:8080')],
-							contextPath: 'pipeline', 
-							war: '**/*.war'}
-							}
-					}
-									}
-
+				}

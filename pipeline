@@ -4,8 +4,16 @@ pipeline {
   PATH = "/opt/maven/bin:$PATH"
 }
     stages {
-       	
-		stage('checkout')
+     stage('AWS') {
+            steps {
+                echo 'NICE'
+            }}
+        stage('DEVOPS') {
+            steps {
+                echo 'EXCELLENT and SIMPLY SUPER'
+            }
+        }
+stage('checkout')
 		{
 		steps{
 		
